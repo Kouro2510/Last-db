@@ -28,7 +28,7 @@ let GetAllBlog = () => {
             console.log('check Blog', Blog);
 
             Blog.forEach((item) => {
-                if (item.Image.photo) {
+                if (item?.Image?.photo) {
                     item.Image.photo = new Buffer(item.Image.photo, 'base64').toString('binary');
                 }
             });
