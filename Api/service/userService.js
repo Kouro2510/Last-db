@@ -42,7 +42,7 @@ let GetAllEmployee = () => {
         try {
             let user = await db.User.findAll({
                 where:{
-                    [Op.and]:[
+                    [Op.or]:[
                        {role:'admin'},{role: 'employee'}
                     ]
                 },
@@ -54,7 +54,7 @@ let GetAllEmployee = () => {
             console.log('check user', user);
 
             user.forEach((item) => {
-                if (item.Image.photo) {
+                if (item?.Image?.photo) {
                     item.Image.photo = new Buffer(item.Image.photo, 'base64').toString('binary');
                 }
             });

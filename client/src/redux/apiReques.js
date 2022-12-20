@@ -83,21 +83,12 @@ import {
 import { getAllOrderNewStart, getAllOrderNewSuccess, getAllOrderNewFail } from './orderSlice';
 import request from '~/utils/request';
 
-export const loginUser = async (email, password, dispatch, navigate) => {
+export const loginUser = async (username, password, dispatch, navigate) => {
     dispatch(loginStart());
     try {
-        const res = await login(email, password);
+        const res = await login(username, password);
         dispatch(loginSuccess(res));
-
         console.log('check res login>>>', res);
-        // if (res.errCode === 0) {
-        //     if (res.user.role !== 'Admin') {
-        //         navigate(config.routes.profile);
-        //     } else {
-        //         navigate(config.routes.dashboard);
-        //     }
-        // }
-
         return res;
     } catch (e) {
         dispatch(loginFail);

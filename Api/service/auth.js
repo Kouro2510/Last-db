@@ -4,11 +4,11 @@ const jwt = require('jsonwebtoken');
 const {Op} = require("sequelize");
 
 //Check
-let checkUsername = (users) => {
+let checkUsername = (username) => {
     return new Promise(async (resolve, reject) => {
         try {
             let user = await db.User.findOne({
-                where: { username: users },
+                where: { username: username },
             });
             if (user) {
                 resolve(true);
@@ -52,12 +52,7 @@ let UserLogin = (usernames, password) => {
             if (isExitUser) {
                 //user is already exits
                 let user = await db.User.findOne({
-                    where: {
-                        [Op.or]:[
-                            {username : usernames},
-
-                        ],
-                    },
+                    where:  {username : usernames},
                     attributes: [
                         'id',
                         'firstName',

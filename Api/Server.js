@@ -9,13 +9,21 @@ const mysql = require("mysql2/promise");
 const db = require("./models");
 const app = express();
 app.use(express.json());
+const cookieParser = require('cookie-parser');
 app.use(express.urlencoded({extended: true}));
 require("dotenv").config();
-const corsOptions = {
-    origin: "http://localhost:8081"
-};
 
-app.use(cors(corsOptions));
+app.use(
+    cors({
+        credentials: true,
+        origin: (_, callback) => callback(null, true),
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        optionsSuccessStatus: 200,
+    }),
+);
+app.use(cookieParser());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -52,12 +60,4 @@ async function createdb() {
         .then(() => {
             console.log("Synced database check is complete");
         })
-}
-function checkDB(){
-    const check = db.Blog.findAll({
-        where:{Blohname : null}
-    })
-    if(check===true){
-
-    }
 }

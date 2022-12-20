@@ -1,7 +1,7 @@
 const routes = {
     //admin
     dashboard: '/admin',
-    loginAdmin: '/login-admin',
+    login: '/login',
     new: 'new',
     users: '/admin/users',
     single: 'details/:id',
@@ -31,8 +31,6 @@ const routes = {
     order_detail: 'order-detail/:id',
 
     //customer
-    customer_login: '/login-customer',
-
     home: '/',
     product_detail: '/product-detail/:id',
     list_doctor: '/list-doctor',
