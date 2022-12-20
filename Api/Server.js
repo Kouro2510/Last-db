@@ -53,3 +53,11 @@ async function createdb() {
             console.log("Synced database check is complete");
         })
 }
+function checkDB(){
+    const check = db.Blog.findAll({
+        where:{Blohname : null}
+    })
+    if(check===true){
+
+    }
+}
