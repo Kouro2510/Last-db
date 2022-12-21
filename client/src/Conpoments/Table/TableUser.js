@@ -1,59 +1,179 @@
-import "./Table.scss"
-const TableUser = () => {
-    const list =["Id","User Name","First Name","Last Name","Address","Phone Number","Role","Action"];
-    const item=list.map((items)=>{
-        return(
-        <th scope="col" className="px-6 py-3 ">
-            {items}
-        </th>
-        )
-    });
-  return(
+import styles from './Table.scss';
+import classNames from 'classnames/bind';
+import {
+    DataGrid,
 
-              <table className="ml-96 text-sm text-left text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                  <tr>
-                      <th scope="col" className="p-4">
-                          <div className="flex items-center">
-                              <input id="checkbox-all-search" type="checkbox"
-                                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                  <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
-                          </div>
-                      </th>
-                          {item}
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <td className="w-4 p-4">
-                          <div className="flex items-center">
-                              <input id="checkbox-table-search-1" type="checkbox"
-                                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                                  <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
-                          </div>
-                      </td>
-                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                          1
-                      </th>
-                      <th scope="row" className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                          Apple MacBook Pro 17"
-                      </th>
-                      <td className="px-6 py-4">
-                          Sliver
-                      </td>
-                      <td className="px-6 py-4">
-                          Laptop
-                      </td>
-                      <td className="px-6 py-4">
-                          $2999
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                          <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                      </td>
-                  </tr>
-                  </tbody>
-              </table>
-  )
+} from '@mui/x-data-grid';
+import { useMovieData } from '@mui/x-data-grid-generator';
+import { useDispatch, useSelector } from 'react-redux';
+import images from '~/Asset/Image';
+import { Link, useNavigate } from 'react-router-dom';
+import config from '~/config';
+import jwt_decode from 'jwt-decode';
+import { deleteUserById } from '~/redux/apiReques';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { axiosMiddle } from '~/services/axiosJWT';
+
+const cx = classNames.bind(styles);
+function DatatableUser() {
+    let allUsers = useSelector((state) => state.user.users.allUsers?.data);
+    const user = useSelector((state) => state.auth.login?.currentUser);
+
+    let [rows, setRows] = useState([]);
+    let [checkBoxSelection, setCheckBoxSelection] = useState(false);
+
+    const [idUser, setIdUser] = useState();
+    const data = useMovieData();
+
+    const handleRowClick = (params) => {
+        setIdUser(idUser ? null : params.row.id);
+        setCheckBoxSelection(!checkBoxSelection);
+    };
+    useEffect(() => {
+        if (allUsers) {
+            let allUser = allUsers.map((item) => {
+                return {
+                    id: item.id,
+                    username:item.username,
+                    fristname:item.lastName,
+                    lastname:item.lastname,
+                    email: item.email,
+                    image: item.Image.photo,
+                    gender: item.gender,
+                    address: item.address,
+                    role: item.role,
+                    phoneNumber: item.phonenumber,
+                };
+            });
+
+            setRows(allUser);
+        }
+    }, [allUsers]);
+
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 70 },
+        {
+            field: 'user',
+            headerName: 'User',
+            width: 230,
+            renderCell: (params) => {
+                return (
+                    <>
+                        <div className={cx('cellWithImg')}>
+                            <img
+                                className={cx('cellImg')}
+                                src={params.row.image ? params.row.image : images.noImage}
+                                alt="avatar"
+                            />
+                            {params.row.username}
+                        </div>
+                    </>
+                );
+            },
+        },
+        {
+            field: 'firstname',
+            headerName: 'First Name',
+            width: 200,
+        },
+        {
+            field: 'lastname',
+            headerName: 'Last Name',
+            width: 200,
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            width: 150,
+        },
+        {
+            field: 'address',
+            headerName: 'Address',
+            width: 150,
+        },
+        {
+            field: 'phoneNumber',
+            headerName: 'Phone Number',
+            width: 200,
+        },
+        {
+            field: 'gender',
+            headerName: 'Gender',
+            width: 100,
+        },
+        {
+            field: 'role',
+            headerName: 'Role',
+            width: 100,
+        },
+        {
+            field: 'action',
+            headerName: 'Action',
+            width: 200,
+            renderCell: (params) => {
+                return (
+                    <>
+                        <div className={cx('cell-action')}>
+                            <div className={cx('view-button')} onClick={() => handleSubmit(params.row.id)}>
+                                View
+                            </div>
+                            <div className={cx('delete-button')} onClick={() => handleDeleteUser(params.row.id)}>
+                                Delete
+                            </div>
+                        </div>
+                    </>
+                );
+            },
+        },
+    ];
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleSubmit = (user) => {
+        navigate(`details/${user}`);
+    };
+
+    const handleDeleteUser = async (id) => {
+        let axiosJWT = await axiosMiddle(jwt_decode, user?.accessToken, user, dispatch);
+        let res = await deleteUserById(id, user?.accessToken, dispatch, axiosJWT);
+
+        if (res.errCode === 0) {
+            toast.success(res.errMessage);
+        } else {
+            toast.error(res.errMessage);
+        }
+    };
+
+    return (
+        <>
+            <div className={cx('datatable')}>
+                <div className={cx('datatable-title')}>
+                    List User
+                    {idUser ? (
+                        <Link to={config.routes.new} className={cx('link')}>
+                            Edit User
+                        </Link>
+                    ) : (
+                        <Link to={config.routes.new} className={cx('link')}>
+                            Add New User
+                        </Link>
+                    )}
+                </div>
+                <DataGrid
+                    className={cx('customTable ')}
+                    onRowClick={handleRowClick}
+                    {...data}
+                    rows={rows}
+                    columns={columns}
+                    pageSize={9}
+                    checkboxSelection={checkBoxSelection}
+                    rowsPerPageOptions={[9]}
+                />
+            </div>
+        </>
+    );
 }
-export default TableUser;
+
+export default DatatableUser;

@@ -147,7 +147,7 @@ export const getAllUsersRedux = async (accessToken, dispatch, axiosJWT, navigate
         }
     } catch (e) {
         console.log(e);
-        navigate(config.routes.loginAdmin);
+        navigate(config.routes.login);
         dispatch(getUsersFail());
     }
 };

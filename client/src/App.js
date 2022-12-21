@@ -1,40 +1,18 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next'
+import { Routes, Route, BrowserRouter} from 'react-router-dom';
+import config from "~/config";
+import Dashboard from "~/Page/Dashboard/Dashboard";
+import Home from "~/Page/Web/Home";
+import Login from "~/Page/Login/Login";
+import User from "~/Conpoments/User/User";
 
-
-// Contains the value and text for the options
-const languages = [
-    { value: '', text: "Options" },
-    { value: 'en', text: "English" },
-    { value: 'zh', text: "Hindi" },
-    { value: 'th', text: "Bengali" }
-]
 
 function App() {
-
-    // It is a hook imported from 'react-i18next'
-    const { t } = useTranslation();
-
-    const [lang, setLang] = useState('en');
-
-    const handleChange = e => {
-        setLang(e.target.value);
-        let loc = "http://localhost:3000/";
-        window.location.replace(loc + "?lng=" + e.target.value);
-    }
-
     return (
-        <div className="App">
-            <h1>{t('welcome')}</h1>
-            <label>{t('choose')}</label>
-
-            <select value={lang} onChange={handleChange}>
-                {languages.map(item => {
-                    return (<option key={item.value}
-                                    value={item.value}>{item.text}</option>);
-                })}
-            </select>
-        </div>
+        <Routes>
+            <Route path={config.routes.login} element={<Login/>}/>
+            <Route index path={config.routes.employee} element={<Dashboard><User/></Dashboard>}/>
+            <Route index path={config.routes.home} element={<Home/>}/>
+        </Routes>
     );
 }
 

@@ -51,7 +51,7 @@ const SideBar = () => {
             </div>
             <div className="flex flex-row mb-3 pb-1">
                 <div className={`flex items-center space-x-4 ${!open && "mt-5 mb-5"}`}>
-                    <img src={user?.photo ? user.photo : Image.noImage} className={`w-10 h-10 rounded-full ${!open && "left-3 w-4 h-5 absolute"}`}/>
+                    <img src={user?.photo ? user.photo : Image.noImage} className={`w-10 h-10 rounded-full ${!open && "left-4.5 w-8 h-8 absolute"}`}/>
                 </div>
 
                 <h2 style={{transitionDelay: `200ms`,}}
