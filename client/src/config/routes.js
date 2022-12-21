@@ -3,7 +3,7 @@ const routes = {
     dashboard: '/admin',
     login: '/login',
     new: 'new',
-    users: '/admin/users',
+    employee: '/admin/employee',
     single: 'details/:id',
     manage_doctor: '/admin/manage-doctor',
     manage_schedule: '/admin/manage_schedule',
@@ -32,6 +32,7 @@ const routes = {
 
     //customer
     home: '/',
+    register:'/register',
     product_detail: '/product-detail/:id',
     list_doctor: '/list-doctor',
     detail_doctor: '/detail-doctor/:id',
